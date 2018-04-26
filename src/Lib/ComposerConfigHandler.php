@@ -46,7 +46,7 @@ class ComposerConfigHandler extends JsonFile
   {
     $require = $this->get ('require', []);
     unset ($require[$moduleName]);
-    $this->set ('require', $require);
+    $this->set ('require', $require ?: (object)[]);
     return $this;
   }
 
