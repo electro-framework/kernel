@@ -94,13 +94,6 @@ class KernelSettings
    */
   public $modulesPublishingPath = 'modules';
   /**
-   * The application name.
-   * This should be composed only of alphanumeric characters. It is used as the session name.
-   *
-   * @var string
-   */
-  public $name = 'electro';
-  /**
    * @var string The path to the folder where Composer packages are installed.
    */
   public $packagesPath = 'private/packages';
