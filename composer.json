@@ -26,10 +26,5 @@
     "psr-4": {
       "Electro\\": "src"
     }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
   }
 }
