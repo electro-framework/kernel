@@ -65,25 +65,25 @@ class Injector extends Auryn implements InjectorInterface, \ArrayAccess
     };
   }
 
-  public function offsetExists ($offset)
-  {
+  public function offsetExists($offset): bool
+	{
     return isset($this->map[$offset]);
   }
 
-  public function offsetGet ($offset)
-  {
+  public function offsetGet($offset): mixed
+	{
     return $this->get ($offset);
   }
 
-  public function offsetSet ($offset, $value)
-  {
+  public function offsetSet($offset, $value): void
+	{
     if (is_string ($value))
       $this->map[$offset] = $value;
     else $this->share ($value, $offset);
   }
 
-  public function offsetUnset ($offset)
-  {
+  public function offsetUnset($offset): void
+	{
     unset ($this->map[$offset]);
   }
 
