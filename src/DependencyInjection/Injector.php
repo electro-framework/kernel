@@ -40,8 +40,8 @@ class Injector extends Auryn implements InjectorInterface, \ArrayAccess
    * ><p>**Note:** this is similar to {@see provides()}, but it only checks symbolic names, not class or interface
    * names.
    */
-  public function has ($id)
-  {
+  public function has($id): bool
+	{
     return isset($this->map[$id]);
   }
 
