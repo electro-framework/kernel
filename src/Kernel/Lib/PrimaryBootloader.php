@@ -62,20 +62,20 @@ class PrimaryBootloader
   }
 
   /**
-   * @internal
    * This is called by Composer on the `post-install` event.
+   * @internal
    *
    * @param Composer\Script\PackageEvent $event
    * @return int
    */
   static function runInitCommand ($event)
   {
-    return static::runCommand ('init', [], $event);
+    return static::runExternalCommand ('init', []);
   }
-  
+
   /**
-   * @internal
    * This is called by Composer on the `pre-package-uninstall` event.
+   * @internal
    *
    * @param Composer\Script\PackageEvent $event
    * @return int
@@ -83,23 +83,24 @@ class PrimaryBootloader
   static function runUninstallCommand ($event)
   {
     $package = $event->getOperation ()->getPackage ();
-    return static::runCommand ('module:cleanup', ['-s', $package->getName ()], $event);
+    return static::runExternalCommand ('module:cleanup', ['-s', $package->getName ()]);
   }
 
   /**
-   * @internal
    * This is called by Composer on the `post-update` event.
+   * @internal
    *
    * @param Composer\Script\PackageEvent $event
    * @return int
    */
   static function runUpdateCommand ($event)
   {
-    return static::runCommand ('module:refresh', [], $event);
+    return static::runExternalCommand ('module:refresh', []);
   }
 
   /**
    * Runs a console command from within a Composer execution context.
+   * @deprecated Running commands from withing the Composer execution context may lead to incompatibilities between loaded package versions.
    *
    * @param string                       $name Command name.
    * @param string[]                     $args Command arguments.
@@ -114,6 +115,21 @@ class PrimaryBootloader
           $consoleApp->runCommand ($name, $args, $event);
         });
       });
+  }
+
+  /**
+   * Runs a workman command outside of the Composer execution context.
+   *
+   * @param string                       $name Command name.
+   * @param string[]                     $args Command arguments.
+   * @param Composer\Script\PackageEvent $event
+   * @return int
+   */
+  static private function runExternalCommand ($name, $args = [])
+  {
+    $cmd = 'bin/workman ' . $name . ' ' . implode (' ', $args);
+    exec ($cmd, $output, $status);  //$output and $status are output args
+    return $status;
   }
 
   /**
