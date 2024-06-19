@@ -26,12 +26,12 @@ class KernelModule
       ->share (ModulesRegistry::class)
       ->prepare (ModulesRegistry::class, function (ModulesRegistry $registry) use ($injector) {
         if (!$registry->load ()) {
-          $settings = $injector->make (KernelSettings::class);
-          if (!$settings->isConsoleBased) {
-            $runner = self::TASK_RUNNER_NAME;
-            throw new ExceptionWithTitle ("The application's runtime configuration is not initialized.",
-              "Please run <kbd>$runner</kbd> on the command line.");
-          }
+          // $settings = $injector->make (KernelSettings::class);
+          // if (!$settings->isConsoleBased) {
+          //   $runner = self::TASK_RUNNER_NAME;
+          //   throw new ExceptionWithTitle ("The application's runtime configuration is not initialized.",
+          //     "Please run <kbd>$runner</kbd> on the command line.");
+          // }
           /** @var ModulesInstaller $installer */
           // Note: to prevent a cyclic dependency exception, $registry must be passed to the ModulesInstaller's
           // constructor.
