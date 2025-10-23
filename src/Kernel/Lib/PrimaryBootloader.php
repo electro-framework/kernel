@@ -146,7 +146,7 @@ class PrimaryBootloader
    *                                    {@seeModuleInterface::startUp} does for modules.
    * @return int Exit status code. Only meaningful for console applications.
    */
-  function boot (ProfileInterface $profile, $urlDepth = 0, callable $onStartUp = null)
+  function boot (ProfileInterface $profile, $urlDepth = 0, callable|null $onStartUp = null)
   {
     // Initialize the injector with services defined on the profile.
 
