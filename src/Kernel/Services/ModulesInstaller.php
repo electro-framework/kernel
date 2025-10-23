@@ -288,7 +288,7 @@ class ModulesInstaller
 	{
 		return map($names, function ($name) use ($modules)
 		{
-			$module = array_find($modules, 'name', $name);
+			$module = array_find_by_key($modules, 'name', $name);
 			if (!$module)
 				throw new \RuntimeException("Module not found: $name");
 			return $module;
