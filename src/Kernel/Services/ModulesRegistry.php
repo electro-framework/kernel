@@ -45,7 +45,7 @@ class ModulesRegistry
    */
   private $pendingInit = false;
 
-  function __construct (KernelSettings $kernelSettings)
+  function __construct(KernelSettings $kernelSettings)
   {
     $this->kernelSettings = $kernelSettings;
   }
@@ -56,12 +56,12 @@ class ModulesRegistry
    * @param string $name A module name in `vendor-name/package-name` format.
    * @return bool `true` if the name is valid.
    */
-  static public function validateModuleName ($name)
+  static public function validateModuleName($name)
   {
-    return (bool)preg_match ('#^[a-z0-9\-\._]+/[a-z0-9\-\._]+$#', $name);
+    return (bool)preg_match('#^[a-z0-9\-\._]+/[a-z0-9\-\._]+$#', $name);
   }
 
-  static private function hidrateModulesList (array $data)
+  static private function hidrateModulesList(array $data)
   {
     return map ($data, function ($o) { return array_toClass ($o, ModuleInfo::class); });
   }
@@ -71,7 +71,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function all ()
+  function all()
   {
     $this->moduleFilters = [];
     return $this;
@@ -83,9 +83,9 @@ class ModulesRegistry
    * @param string $moduleName vendor-name/product-name
    * @return ModuleInfo|null `null` if the module is not registered.
    */
-  function getModule ($moduleName)
+  function getModule($moduleName)
   {
-    return get ($this->modules, $moduleName);
+    return get($this->modules, $moduleName);
   }
 
   /**
@@ -93,7 +93,7 @@ class ModulesRegistry
    *
    * @return string[]
    */
-  function getModuleNames ()
+  function getModuleNames()
   {
     return array_values (map ($this->getModules (), function (ModuleInfo $m) { return $m->name; }));
   }
@@ -104,7 +104,7 @@ class ModulesRegistry
    *
    * @return ModuleInfo[]
    */
-  function getModules ()
+  function getModules()
   {
     $modules = filter ($this->modules, function (ModuleInfo $m) {
       foreach ($this->moduleFilters as $filter)
@@ -112,11 +112,11 @@ class ModulesRegistry
           return false;
       return true;
     });
-    $this->all ();
+    $this->all();
     return $modules;
   }
 
-  function getPathMappings ()
+  function getPathMappings()
   {
     return mapAndFilter ($this->onlyPrivateOrPlugins ()->onlyEnabled ()->getModules (),
       function (ModuleInfo $mod, &$k) {
@@ -132,9 +132,9 @@ class ModulesRegistry
    * @param array $data
    * @return $this
    */
-  function importFrom (array $data)
+  function importFrom(array $data)
   {
-    $this->modules = isset($data['modules']) ? self::hidrateModulesList ($data['modules']) : [];
+    $this->modules = isset($data['modules']) ? self::hidrateModulesList($data['modules']) : [];
     return $this;
   }
 
@@ -144,9 +144,9 @@ class ModulesRegistry
    * @param string $moduleName `vendor-name/package-name` syntax.
    * @return bool
    */
-  function isInstalled ($moduleName)
+  function isInstalled($moduleName)
   {
-    return isset ($this->modules[$moduleName]);
+    return isset($this->modules[$moduleName]);
   }
 
   /**
@@ -155,9 +155,9 @@ class ModulesRegistry
    * @param string $moduleName `vendor-name/package-name` syntax.
    * @return bool
    */
-  function isPlugin ($moduleName)
+  function isPlugin($moduleName)
   {
-    $mod = get ($this->modules, $moduleName);
+    $mod = get($this->modules, $moduleName);
     return $mod ? $mod->type == ModuleInfo::TYPE_PLUGIN : false;
   }
 
@@ -167,9 +167,9 @@ class ModulesRegistry
    * @param string $moduleName `vendor-name/package-name` syntax.
    * @return bool
    */
-  function isPrivateModule ($moduleName)
+  function isPrivateModule($moduleName)
   {
-    $mod = get ($this->modules, $moduleName);
+    $mod = get($this->modules, $moduleName);
     return $mod ? $mod->type == ModuleInfo::TYPE_PRIVATE : false;
   }
 
@@ -179,9 +179,9 @@ class ModulesRegistry
    * @param string $moduleName `vendor-name/package-name` syntax.
    * @return bool
    */
-  function isSubsystem ($moduleName)
+  function isSubsystem($moduleName)
   {
-    $mod = get ($this->modules, $moduleName);
+    $mod = get($this->modules, $moduleName);
     return $mod ? $mod->type == ModuleInfo::TYPE_SUBSYSTEM : false;
   }
 
@@ -190,11 +190,11 @@ class ModulesRegistry
    *
    * @return bool false if the registry file doesn't exist.
    */
-  function load ()
+  function load()
   {
-    $json = new JsonFile ($this->getRegistryPath (), true, true);
+    $json = new JsonFile($this->getRegistryPath(), true, true);
     if ($json->exists ()) {
-      $this->importFrom ($json->load ()->data);
+      $this->importFrom($json->load()->data);
       return true;
     }
     return false;
@@ -207,7 +207,7 @@ class ModulesRegistry
    * @param callable|null $filter If null, no filter will be added.
    * @return $this
    */
-  function only (callable $filter = null)
+  function only(callable|null $filter = null)
   {
     if ($filter)
       $this->moduleFilters[] = $filter;
@@ -219,7 +219,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyBootable ()
+  function onlyBootable()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return (bool)$module->bootstrapper; };
     return $this;
@@ -230,7 +230,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyDisabled ()
+  function onlyDisabled()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return !$module->enabled; };
     return $this;
@@ -241,7 +241,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyEnabled ()
+  function onlyEnabled()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return $module->enabled; };
     return $this;
@@ -252,7 +252,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyNotBootable ()
+  function onlyNotBootable()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return !$module->bootstrapper; };
     return $this;
@@ -263,7 +263,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyPlugins ()
+  function onlyPlugins()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return $module->type == ModuleInfo::TYPE_PLUGIN; };
     return $this;
@@ -274,10 +274,10 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyPluginsRequiredByModules ()
+  function onlyPluginsRequiredByModules()
   {
     $composerCfg           = new ComposerConfigHandler;
-    $required              = $composerCfg->get ('require');
+    $required              = $composerCfg->get('require');
     $this->moduleFilters[] = function (ModuleInfo $module) use ($required) {
       return $module->type == ModuleInfo::TYPE_PLUGIN && isset($required[$module->name]);
     };
@@ -289,7 +289,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyPrivate ()
+  function onlyPrivate()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return $module->type == ModuleInfo::TYPE_PRIVATE; };
     return $this;
@@ -300,11 +300,11 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlyPrivateOrPlugins ()
+  function onlyPrivateOrPlugins()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) {
       return $module->type == ModuleInfo::TYPE_PRIVATE ||
-             $module->type == ModuleInfo::TYPE_PLUGIN;
+        $module->type == ModuleInfo::TYPE_PLUGIN;
     };
     return $this;
   }
@@ -314,7 +314,7 @@ class ModulesRegistry
    *
    * @return $this
    */
-  function onlySubsystems ()
+  function onlySubsystems()
   {
     $this->moduleFilters[] = function (ModuleInfo $module) { return $module->type == ModuleInfo::TYPE_SUBSYSTEM; };
     return $this;
@@ -326,9 +326,9 @@ class ModulesRegistry
    * @param string $moduleName vendor-name/product-name
    * @return string The module's path.
    */
-  function pathOf ($moduleName)
+  function pathOf($moduleName)
   {
-    return $this->getModule ($moduleName)->path;
+    return $this->getModule($moduleName)->path;
   }
 
   /**
@@ -341,7 +341,7 @@ class ModulesRegistry
    * @param callable|null $value [optional] If specified, sets the callback to be invoked later.
    * @return callable|null The current value or the value being set.
    */
-  function pendingInitializations ($value = null)
+  function pendingInitializations($value = null)
   {
     return isset($value) ? $this->pendingInit = $value : $this->pendingInit;
   }
@@ -349,14 +349,14 @@ class ModulesRegistry
   /**
    * Saves the modules registration configuration for this project.
    */
-  function save ()
+  function save()
   {
-    $filePath = $this->getRegistryPath ();
-    $path     = dirname ($filePath);
-    if (!file_exists ($path))
-      mkdir ($path, 0777, true);
-    $json = new JsonFile ($filePath, true);
-    $json->assign (['modules' => $this->modules])->save ();
+    $filePath = $this->getRegistryPath();
+    $path     = dirname($filePath);
+    if (!file_exists($path))
+      mkdir($path, 0777, true);
+    $json = new JsonFile($filePath, true);
+    $json->assign(['modules' => $this->modules])->save();
   }
 
   /**
@@ -364,7 +364,7 @@ class ModulesRegistry
    *
    * @param ModuleInfo[] $modules A map of module names to module information objects.
    */
-  function setAllModules (array $modules)
+  function setAllModules(array $modules)
   {
     $this->modules = $modules;
   }
@@ -375,19 +375,19 @@ class ModulesRegistry
    * @param string $moduleName
    * @return bool false if the module name does not match an installed module, or if it is a subsystem module.
    */
-  function unregisterModule ($moduleName)
+  function unregisterModule($moduleName)
   {
-    $module = $this->getModule ($moduleName);
-    if (!$module || $this->isSubsystem ($moduleName)) return false;
-    unset ($this->modules[$moduleName]);
-    $this->save ();
+    $module = $this->getModule($moduleName);
+    if (!$module || $this->isSubsystem($moduleName)) return false;
+    unset($this->modules[$moduleName]);
+    $this->save();
     return true;
   }
 
   /**
    * @return string
    */
-  private function getRegistryPath ()
+  private function getRegistryPath()
   {
     return "{$this->kernelSettings->storagePath}/" . self::REGISTRY_FILE;
   }
